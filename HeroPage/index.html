@@ -792,11 +792,31 @@
                 })
                 .then(data => {
                     document.getElementById('navbar').innerHTML = data;
+
+                    // Initialize mobile menu toggle after navbar is loaded
+                    const mobileMenuButton = document.getElementById('mobile-menu-button');
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    const hamburgerIcon = mobileMenuButton.querySelector('.hamburger-icon');
+                    const closeIcon = mobileMenuButton.querySelector('.close-icon');
+
+                    if (mobileMenuButton && mobileMenu && hamburgerIcon && closeIcon) {
+                        mobileMenuButton.addEventListener('click', () => {
+                            const isHidden = mobileMenu.classList.contains('hidden');
+                            mobileMenu.classList.toggle('hidden');
+                            hamburgerIcon.classList.toggle('hidden', !isHidden);
+                            closeIcon.classList.toggle('hidden', isHidden);
+                            mobileMenuButton.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+                        });
+                    } else {
+                        console.error('Mobile menu elements not found');
+                    }
                 })
                 .catch(error => {
                     console.error('Error loading navbar:', error);
                     document.getElementById('navbar').innerHTML = '<p>Error loading navigation bar.</p>';
                 });
+
+            // ... (rest of the existing script code for carousel, countdown, etc., remains unchanged)
         });
 
         // Photo carousel
@@ -883,29 +903,27 @@
         startCountdown("countdown-3", "days-3", "hours-3", "minutes-3", "seconds-3", targetDate3);
 
         // Line animation
-        document.addEventListener('DOMContentLoaded', () => {
-            const lines = document.querySelectorAll('.line-connector');
+        const lines = document.querySelectorAll('.line-connector');
 
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.5
-            };
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5
+        };
 
-            const observerCallback = (entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            };
-
-            const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-            lines.forEach(line => {
-                observer.observe(line);
+        const observerCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
             });
+        };
+
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+        lines.forEach(line => {
+            observer.observe(line);
         });
 
         // Counter animation
@@ -945,10 +963,8 @@
             observer.observe(document.querySelector("#stats"));
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            lucide.createIcons();
-            startCountUpOnVisible();
-        });
+        lucide.createIcons();
+        startCountUpOnVisible();
     </script>
 </body>
 
